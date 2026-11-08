@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" class="is-preloading is-lookbook">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ATELIER — Hanging Card Product Gallery</title>
+  
+  <!-- Fonts: Instrument Serif, Newsreader, JetBrains Mono, Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js & OrbitControls for Live 3D Garment Simulation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="preload" href="assets/fonts/bodoni-moda-italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/bodoni-moda.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/preloader.css">
+  <link rel="stylesheet" href="assets/css/lookbook.css">
+  <link rel="stylesheet" href="assets/css/collection.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       PRELOADER (built by assets/js/preloader.js)
+       ======================================================================== -->
+  <div class="preloader" id="preloader" aria-hidden="true"></div>
+  <script src="assets/js/preloader.js"></script>
+
+  <!-- ========================================================================
+       LOOKBOOK HERO (slides built by assets/js/lookbook.js)
+       ======================================================================== -->
+  <section class="lookbook" id="lookbook" aria-label="Atelier lookbook">
+    <div class="lookbook__top">
+      <span class="lookbook__meta"><span class="lb-hide-sm">Lookbook — </span><b id="lbIndex">01</b> / 06</span>
+      <a class="lookbook__brand" href="#lookbook">Atelier</a>
+      <a class="lookbook__meta lookbook__meta--right" href="#collection" data-explore>Collection &#8600;</a>
+    </div>
+
+    <div class="lookbook__stage" id="lbStage" aria-live="polite"></div>
+
+    <div class="lookbook__bottom">
+      <div class="lookbook__dots" id="lbDots" role="tablist" aria-label="Lookbook slides"></div>
+      <button class="lookbook__cta" id="lbExplore" type="button" data-explore aria-label="Explore the collection">
+        <span class="lb-cta__shine" aria-hidden="true"></span>
+        <span class="lb-cta__thumbs" aria-hidden="true">
+          <span class="lb-cta__thumb"><img src="assets/images/shirt-3d-ochre.png" alt=""></span>
+          <span class="lb-cta__thumb"><img src="assets/images/shirt-3d-mockup.png" alt=""></span>
+          <span class="lb-cta__thumb"><img src="assets/images/tshirt-3d-sage.png" alt=""></span>
+        </span>
+        <span class="lb-cta__text">
+          <span class="lb-cta__label">Explore Collection</span>
+          <span class="lb-cta__sub" id="lbCtaSub">15 pieces · Shirts &amp; Tees</span>
+        </span>
+        <span class="lb-cta__icon" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v11M3.5 9l4.5 4.5L12.5 9"/></svg>
+        </span>
+      </button>
+      <span class="lookbook__hint" aria-hidden="true"><span id="lbHintText">Click to view all products</span></span>
+    </div>
+
+    <div class="lookbook__cursor" id="lbCursor" aria-hidden="true"></div>
+  </section>
+
+  <!-- ========================================================================
+       TOP HEADER & FILTER NAV
+       ======================================================================== -->
+  <header class="top-header" id="collection">
+    <div class="brand-group">
+      <h1 class="brand-title">Atelier</h1>
+    </div>
+
+    <!-- Category Filters -->
+    <nav class="filter-bar" id="categoryFilters">
+      <button class="filter-btn active" data-category="all">
+        <span class="dot"></span> All
+      </button>
+      <button class="filter-btn" data-category="rack1">
+        <span class="dot"></span> Shirts
+      </button>
+      <button class="filter-btn" data-category="rack2">
+        <span class="dot"></span> T-Shirts
+      </button>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <button class="action-btn" id="flipAllBtn" title="Flip all cards to view specs and rubber stamps">
+        <i data-lucide="rotate-3d" style="width: 15px; height: 15px;"></i>
+        <span>Flip Tags</span>
+      </button>
+
+      <button class="action-btn cart-btn" id="openCartBtn">
+        <i data-lucide="shopping-bag" style="width: 15px; height: 15px;"></i>
+        <span class="cart-badge" id="cartCountBadge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       CONVEYOR RACK STAGE (2 HORIZONTAL TRACKS - MATCHING THE USER'S IMAGE)
+       ======================================================================== -->
+  <main class="gallery-stage" id="galleryStage">
+
+    <!-- ----------------------------------------------------------------------
+         RACK ROW 1: SAME-TONE SHIRTS
+         ---------------------------------------------------------------------- -->
+    <section class="rack-track-section" id="rackSection1">
+      <!-- Heavy metallic dark hanger rail running edge-to-edge -->
+      <div class="hanger-rail"></div>
+
+      <!-- Cards horizontal scroll area with kinetic mouse drag -->
+      <div class="cards-row-wrapper" id="scrollRow1">
+        <div class="cards-flex-track" id="trackRow1">
+          <!-- Populated by JavaScript with Cards matching the reference layout -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------------------
+         RACK ROW 2: T-SHIRTS (Clean rail without redundant badges or arrows)
+         ---------------------------------------------------------------------- -->
+    <section class="rack-track-section" id="rackSection2">
+      <!-- Second horizontal rail -->
+      <div class="hanger-rail"></div>
+
+      <!-- Cards horizontal scroll area with kinetic mouse drag -->
+      <div class="cards-row-wrapper" id="scrollRow2">
+        <div class="cards-flex-track" id="trackRow2">
+          <!-- Populated by JavaScript -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <div class="site-footer__brand">
+        <span class="site-footer__logo">Atelier</span>
+        <p>Considered shirting &amp; heavyweight tees, cut in small runs.</p>
+      </div>
+      <nav class="site-footer__links" aria-label="Footer">
+        <a href="#">Shipping</a>
+        <a href="#">Returns</a>
+        <a href="#">Care Guide</a>
+        <a href="#">Contact</a>
+      </nav>
+      <div class="site-footer__meta">
+        <button class="site-footer__top" type="button" id="footerTop">
+          Back to top
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 13.5v-11M3.5 7L8 2.5 12.5 7"/></svg>
+        </button>
+        <span>&copy; <span id="footerYear">2026</span> Atelier &middot; Dhaka</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       PRODUCT DETAIL QUICK-VIEW MODAL
+       ======================================================================== -->
+  <div class="modal-backdrop" id="productModal">
+    <div class="product-modal-dialog">
+      <!-- High-visibility close button positioned at top-right -->
+      <button class="modal-close-btn" id="closeModalBtn" aria-label="Close modal">
+        <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+      </button>
+
+      <div class="modal-gallery-col">
+        <!-- 3D / Render Switcher: 3D Mockup first, then 3D Orbit View -->
+        <div class="modal-view-mode-bar">
+          <button class="view-mode-btn active" id="viewModeRender" onclick="switchModalView('render')">
+            <i data-lucide="image" style="width: 13px; height: 13px;"></i> 3D Mockup
+          </button>
+          <button class="view-mode-btn" id="viewMode3D" onclick="switchModalView('3d')">
+            <i data-lucide="rotate-3d" style="width: 13px; height: 13px;"></i> 3D Orbit View
+          </button>
+        </div>
+
+        <!-- Primary 3D Studio Mockup View (Active by default) -->
+        <div id="renderViewerContainer" class="render-viewer-box">
+          <div class="mockup-fit-badge" id="mockupFitBadge">
+            <span class="fit-dot"></span>
+            <span id="fitBadgeText">Size M · Classic Regular Fit</span>
+          </div>
+          <img src="" alt="Men's Garment Studio Specimen" class="modal-img-card" id="modalImage">
+          <div class="size-measure-overlay" id="sizeMeasureOverlay">
+            <div class="measure-tag"><i data-lucide="ruler" style="width: 10px; height: 10px;"></i> <span id="measureChest">Chest 41"</span></div>
+            <div class="measure-tag"><span id="measureLen">Length 28.5"</span></div>
+          </div>
+        </div>
+
+        <!-- Secondary 3D WebGL Canvas Viewport (Switched on demand) -->
+        <div id="webglViewerContainer" class="webgl-viewer-box" style="display: none;">
+          <canvas id="garment3dCanvas"></canvas>
+          <div class="webgl-orbit-hint">
+            <i data-lucide="move" style="width: 11px; height: 11px;"></i> Drag to Rotate 360°
+          </div>
+
+          <div class="cam-angles-bar">
+            <button class="cam-btn active" id="camBtnPerspective" onclick="set3dCamera('perspective')">3/4 Angle</button>
+            <button class="cam-btn" id="camBtnFront" onclick="set3dCamera('front')">Front</button>
+            <button class="cam-btn" id="camBtnSide" onclick="set3dCamera('side')">Side</button>
+            <button class="cam-btn" id="camBtnBack" onclick="set3dCamera('back')">Back</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-info-col">
+        <div>
+          <div class="modal-badge-row">
+            <span class="modal-tag" id="modalCategory">Oxford Collection</span>
+            <span class="modal-price" id="modalPrice">$145.00</span>
+          </div>
+
+          <h3 class="modal-title" id="modalTitle">The Tokyo Oxford</h3>
+          <p class="modal-desc" id="modalDesc">
+            Spun from long-staple Giza 87 Egyptian cotton with a durable pinpoint weave. Features mother-of-pearl buttons, a curved hem, and a tailored collar designed to look sharp untucked or under a tailored jacket.
+          </p>
+
+          <!-- 3D Live Material Color Swatches -->
+          <div class="color-picker-section">
+            <div class="section-label-row">
+              <span class="size-picker-label">3D Garment Colorway</span>
+              <span class="active-color-name" id="modalActiveColorName">Sky Blue</span>
+            </div>
+            <div class="color-swatches-row" id="modalColorSwatches">
+              <!-- Swatches populated by JS -->
+            </div>
+          </div>
+
+          <!-- Dynamic Size Picker with Real-Time Fit Visual System -->
+          <div class="size-picker-section">
+            <div class="section-label-row">
+              <span class="size-picker-label">Select Size</span>
+              <span class="size-spec-indicator" id="modalSizeSpecTag">Size M · Classic Regular</span>
+            </div>
+            <div class="size-options-grid" id="modalSizeGrid">
+              <button class="size-btn" data-size="S" onclick="setProductSize('S')">S</button>
+              <button class="size-btn active" data-size="M" onclick="setProductSize('M')">M</button>
+              <button class="size-btn" data-size="L" onclick="setProductSize('L')">L</button>
+              <button class="size-btn" data-size="XL" onclick="setProductSize('XL')">XL</button>
+            </div>
+            <div class="size-dimension-hint" id="sizeDimensionHint">
+              Chest: 41" · Length: 28.5" · Shoulder: 18.5"
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-cta-group">
+          <button class="btn-add-bag" id="modalAddBagBtn">
+            <i data-lucide="bag-add" style="width: 16px; height: 16px;"></i>
+            <span>Add to Bag</span>
+          </button>
+          <button class="btn-flip-back" id="modalFlipCardBtn">
+            <i data-lucide="file-text" style="width: 16px; height: 16px;"></i>
+            <span>View Hangtag Notes</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SHOPPING BAG DRAWER
+       ======================================================================== -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="cart-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i data-lucide="shopping-bag" style="width: 18px; height: 18px;"></i>
+        <h3 style="font-family: var(--font-serif); font-size: 24px; font-weight: 400; color: var(--at-ink, #2b2926);">Your Bag</h3>
+      </div>
+      <button class="modal-close-btn" id="closeCartBtn" style="position: static;">
+        <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+      </button>
+    </div>
+
+    <div class="cart-items-list" id="cartItemsList">
+      <div style="text-align: center; color: #6b7280; font-size: 13px; padding-top: 40px;">
+        Your bag is currently empty.
+      </div>
+    </div>
+
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <span>Total:</span>
+        <strong id="cartTotalPrice">$0.00</strong>
+      </div>
+      <button class="btn-checkout" id="checkoutBtn">Proceed to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Toast Message -->
+  <div class="toast-notice" id="toastNotice">
+    <i data-lucide="check-circle" style="width: 15px; height: 15px; color: #16a34a;"></i>
+    <span id="toastMsg">Added to bag</span>
+  </div>
+
+  <!-- ========================================================================
+       JAVASCRIPT: PRODUCT DATA, CLIP RENDERER & INTERACTION LOGIC
+       ======================================================================== -->
+  <!-- Scripts -->
+  <script src="assets/js/products.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/lookbook.js"></script>
+</body>
+</html>
